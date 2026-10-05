@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumina: study from the page in front of you</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2280%22 font-size=%2280%22>✦</text></svg>">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+:root{--ink:#14183A;--paper:#F3F6FB;--line:#DCE4F2;--hi:#FFE34D;--red:#E5484D;--sub:#2b3563}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.55 'DM Sans',sans-serif;color:var(--ink);background:linear-gradient(var(--line) 1px,transparent 1px) 0 0/28px 28px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/28px 28px,var(--paper)}
+h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.02em;margin:0 0 .5rem}
+nav{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;background:#fff;border-bottom:2px solid var(--ink);padding:.7rem 1.2rem}
+nav .brand{font:800 1.4rem 'Bricolage Grotesque',sans-serif;margin-right:auto}
+main{max-width:1000px;margin:0 auto;padding:2rem 1.2rem 4rem}
+.btn,select{font:700 1rem 'DM Sans',sans-serif;color:var(--ink);border:2px solid var(--ink);background:#fff;padding:.5rem 1rem;border-radius:4px;cursor:pointer}
+.btn:hover{transform:translate(-1px,-1px)}
+.btn:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.btn.pri{background:var(--hi);box-shadow:3px 3px 0 var(--ink)}
+.btn[aria-pressed=true],.btn[aria-current=page]{background:var(--ink);color:#fff}
+.btn:disabled{opacity:.5;cursor:wait}
+.hero{background:#fff;border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:2rem 2.2rem;margin-bottom:2rem}
+.hero h1{font-size:clamp(2.2rem,6vw,3.3rem);line-height:1.05}
+.hero p{font-size:1.15rem;max-width:56ch;margin:0;color:var(--sub)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-bottom:2rem}
+.feat{border-top:3px solid var(--ink);padding-top:.7rem}.feat p{margin:0;color:var(--sub)}
+.stat{background:#fff;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:.8rem 1rem}
+.stat b{display:block;font:800 1.8rem 'Bricolage Grotesque',sans-serif}
+#chart{display:flex;align-items:flex-end;gap:6px;height:140px;padding:0 6px;background:#fff;border-left:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+#chart i{flex:1;max-width:40px;background:var(--hi);border:2px solid var(--ink)}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin:1rem 0}
+label.f{display:block;font-weight:700;margin:1rem 0 .3rem}
+input[type=file]{display:block;padding:.6rem;border:2px dashed var(--ink);background:#fff;width:100%}
+#tprev{max-width:320px;width:100%;border:2px solid var(--ink);margin:.8rem 0}
+.msg{border:2px solid var(--ink);background:#fff;padding:.7rem 1rem;margin:.6rem 0;white-space:pre-wrap}
+.msg.me{background:var(--hi);margin-left:15%}
+.msg.ai{white-space:normal}.msg.ai>:first-child{margin-top:0}.msg.ai>:last-child{margin-bottom:0}
+.msg.ai h1,.msg.ai h2,.msg.ai h3{font-size:1.2rem;margin:1.2rem 0 .4rem}
+.msg.ai p{margin:.5rem 0}.msg.ai ul,.msg.ai ol{padding-left:1.4rem;margin:.4rem 0}
+.msg.ai .katex-display{overflow-x:auto;overflow-y:hidden;padding:.3rem 0}
+.qcard,.acard{position:relative;padding:32px 24px 32px 3.6rem;margin:1.2rem 0;border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);font-size:1.25rem;line-height:32px}
+.qcard{border-top:12px solid var(--red);background:repeating-linear-gradient(#fff 0 31px,#CFD9EE 31px 32px)}
+.acard{background:repeating-linear-gradient(#FFF7BF 0 31px,#EBDD7E 31px 32px)}
+.qcard:before,.acard:before{content:"";position:absolute;left:2.5rem;top:0;bottom:0;border-left:2px solid var(--red)}
+fieldset{border:0;padding:0;margin:1.4rem 0}legend{font-weight:700;margin-bottom:.4rem}
+.opt{display:block;border:2px solid var(--ink);background:#fff;padding:.5rem .8rem;margin:.35rem 0;cursor:pointer}
+.opt.ok{background:#C9F2C7}.opt.bad{background:#FFD0D0}
+#status{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);max-width:92vw;background:var(--ink);color:#fff;padding:.6rem 1.1rem;border-radius:4px}
+#status.err{background:var(--red)}
+[hidden]{display:none!important}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<nav aria-label="Main">
+  <span class="brand">✦ Lumina</span>
+  <button class="btn" data-go="home">Home</button>
+  <button class="btn" data-go="tutor">Tutor</button>
+  <button class="btn" data-go="lab">Study Lab</button>
+  <select id="lang" aria-label="Language"><option>English</option><option>Tamil</option><option>Hindi</option></select>
+</nav>
+<main>
+<section id="home">
+  <div class="hero"><h1>Study from the page in front of you.</h1>
+  <p>Photograph a problem or a page of notes. Lumina gives you hints, flashcards and quizzes you can use straight away.</p></div>
+  <div class="grid">
+    <div class="feat"><h3>Tutor</h3><p>Get hints that guide you to the answer instead of handing it over.</p></div>
+    <div class="feat"><h3>Flashcards</h3><p>Turn handwritten notes into index cards you can flip through.</p></div>
+    <div class="feat"><h3>Quizzes</h3><p>Check what stuck with multiple-choice questions and explanations.</p></div>
+  </div>
+  <div class="grid" id="stats"></div>
+  <div id="chartwrap" hidden><h2>Your quiz scores</h2><div id="chart"></div></div>
+</section>
+
+<section id="tutor" hidden>
+  <h1>Tutor</h1>
+  <label class="f">Hint level</label>
+  <div class="row" id="levels">
+    <button class="btn" aria-pressed="true">Nudge</button><button class="btn" aria-pressed="false">Method</button><button class="btn" aria-pressed="false">Full solution</button>
+  </div>
+  <label class="f" for="subject">Subject</label>
+  <select id="subject"><option>Maths</option><option>Physics</option><option>Chemistry</option><option>Electronics</option><option>Programming</option><option>Other</option></select>
+  <label class="f" for="tfile">Photo of the problem</label>
+  <input type="file" id="tfile" accept="image/*">
+  <img id="tprev" alt="Your problem" hidden>
+  <div class="row"><button class="btn pri" id="hint">Get hint</button><button class="btn" id="newp">Start a new problem</button></div>
+  <div id="chat" aria-live="polite"></div>
+  <div class="row" id="follow" hidden><input id="fq" placeholder="Ask a follow-up, or raise the hint level and ask again" style="flex:1;min-width:220px;padding:.6rem;border:2px solid var(--ink)"><button class="btn pri" id="send">Send</button></div>
+</section>
+
+<section id="lab" hidden>
+  <h1>Study Lab</h1>
+  <label class="f" for="nfiles">Photos of your notes (up to 4)</label>
+  <input type="file" id="nfiles" accept="image/*" multiple>
+  <p id="nstate"></p>
+  <label class="f" for="n">How many? <output id="nout">8</output></label>
+  <input type="range" id="n" min="3" max="15" value="8">
+  <div class="row"><button class="btn" id="t1" aria-pressed="true">Flashcards</button><button class="btn" id="t2" aria-pressed="false">Quiz</button></div>
+  <div id="p1">
+    <button class="btn pri" id="mkcards">Make flashcards</button>
+    <div id="cardbox" hidden>
+      <p id="cprog"></p><div class="qcard" id="q"></div><div class="acard" id="a" hidden></div>
+      <div class="row"><button class="btn" id="prev">Previous</button><button class="btn" id="flip">Show answer</button><button class="btn" id="next">Next</button><button class="btn" id="csv">Download for Anki (CSV)</button></div>
+    </div>
+  </div>
+  <div id="p2" hidden>
+    <button class="btn pri" id="mkquiz">Generate quiz</button>
+    <div id="qz"></div>
+    <button class="btn pri" id="check" hidden>Check my answers</button>
+    <h2 id="score"></h2>
+  </div>
+</section>
+</main>
+<div id="status" role="status" hidden></div>
+
+<script>
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let stats = {hints:0, cards:0, quizzes:0, scores:[]};
+try { stats = JSON.parse(localStorage.getItem('lumina')) || stats; } catch (e) {}
+const save = () => { try { localStorage.setItem('lumina', JSON.stringify(stats)); } catch (e) {} };
+
+function status(msg, bad) { const s = $('#status'); s.textContent = msg; s.className = bad ? 'err' : ''; s.hidden = !msg; }
+async function work(fn) {
+  status('Lumina is working...'); $$('.btn').forEach(b => b.disabled = true);
+  try { await fn(); status(''); }
+  catch (e) { status("That didn't work: " + e.message + ' Try a clearer photo, or try again.', true); }
+  $$('.btn').forEach(b => b.disabled = false);
+}
+async function api(body) {
+  const r = await fetch('/api/gemma', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+  const j = await r.json().catch(() => ({error:'Server error ' + r.status + '.'}));
+  if (!r.ok) throw new Error(j.error || 'Request failed.');
+  return j;
+}
+const shrink = f => new Promise((ok, no) => {   // resize photos so uploads stay small and fast
+  const img = new Image();
+  img.onload = () => {
+    const k = Math.min(1, 1280 / Math.max(img.width, img.height)), c = document.createElement('canvas');
+    c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    ok({mime:'image/jpeg', data:c.toDataURL('image/jpeg', .82).split(',')[1]});
+  };
+  img.onerror = () => no(new Error('Could not read that photo.')); img.src = URL.createObjectURL(f);
+});
+
+function show(name) {
+  $$('main > section').forEach(s => s.hidden = s.id !== name);
+  $$('[data-go]').forEach(b => b.toggleAttribute('aria-current', b.dataset.go === name) || b.removeAttribute('aria-current'));
+  if (name === 'home') drawHome();
+}
+$$('[data-go]').forEach(b => b.onclick = () => show(b.dataset.go));
+function drawHome() {
+  const avg = stats.scores.length ? Math.round(stats.scores.reduce((a, b) => a + b, 0) / stats.scores.length) + '%' : 'None yet';
+  $('#stats').innerHTML = [['Hints given', stats.hints], ['Cards made', stats.cards], ['Quizzes taken', stats.quizzes], ['Average score', avg]]
+    .map(([l, v]) => `<div class="stat"><b>${v}</b>${l}</div>`).join('');
+  $('#chart').innerHTML = stats.scores.slice(-12).map(p => `<i style="height:${Math.max(p, 4)}%" title="${p}%"></i>`).join('');
+  $('#chartwrap').hidden = !stats.scores.length;
+}
+
+// ---- Tutor ----
+let history = [], level = 'Nudge', tImg = null;
+$$('#levels .btn').forEach(b => b.onclick = () => { level = b.textContent; $$('#levels .btn').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+$('#tfile').onchange = async e => {
+  if (!e.target.files[0]) return;
+  try { tImg = await shrink(e.target.files[0]); } catch (err) { return status(err.message, true); }
+  $('#tprev').src = 'data:image/jpeg;base64,' + tImg.data; $('#tprev').hidden = false; resetChat();
+};
+function resetChat() { history = []; $('#chat').innerHTML = ''; $('#follow').hidden = true; }
+const MATH = {delimiters:[{left:'$$', right:'$$', display:true}, {left:'$', right:'$', display:false}], throwOnError:false};
+function renderMd(text, inline) {   // Markdown to safe HTML; math is set aside so Markdown cannot damage it
+  if (!window.marked || !window.DOMPurify) return esc(text);
+  const math = [], keep = m => '@@M' + (math.push(m) - 1) + '@@';
+  const t = text.replace(/\$\$[\s\S]+?\$\$/g, keep).replace(/\$(?=\S)[^$\n]*?\S\$/g, keep);
+  const html = DOMPurify.sanitize(inline ? marked.parseInline(t) : marked.parse(t));
+  return html.replace(/@@M(\d+)@@/g, (_, i) => esc(math[i]));
+}
+function rich(el, text, inline) {
+  el.innerHTML = renderMd(text, inline);
+  if (window.renderMathInElement) renderMathInElement(el, MATH);
+}
+function bubble(who, text) {
+  const d = document.createElement('div'); d.className = 'msg ' + who;
+  if (who === 'ai') rich(d, text); else d.textContent = text;
+  $('#chat').appendChild(d);
+}
+async function ask() {
+  try {
+    const j = await api({task:'tutor', images:[tImg], history, level, subject:$('#subject').value, language:$('#lang').value});
+    history.push({role:'model', text:j.text}); bubble('ai', j.text); stats.hints++; save(); $('#follow').hidden = false;
+  } catch (e) { history.pop(); throw e; }
+}
+$('#hint').onclick = () => {
+  if (!tImg) return status('Upload a photo of the problem first.', true);
+  resetChat(); history = [{role:'user', text:'Please help me with this problem.'}]; work(ask);
+};
+$('#send').onclick = () => {
+  const q = $('#fq').value.trim(); if (!q) return;
+  history.push({role:'user', text:q}); bubble('me', q); $('#fq').value = ''; work(ask);
+};
+$('#fq').onkeydown = e => { if (e.key === 'Enter') $('#send').click(); };
+$('#newp').onclick = resetChat;
+
+// ---- Study Lab ----
+let files = [], cards = [], ci = 0, shown = false, quiz = [];
+const need = () => { if (!files.length) throw new Error('Upload photos of your notes first.'); };
+$('#nfiles').onchange = async e => {
+  try { files = await Promise.all([...e.target.files].slice(0, 4).map(shrink)); } catch (err) { return status(err.message, true); }
+  $('#nstate').textContent = files.length + ' photo(s) ready.';
+};
+$('#n').oninput = e => $('#nout').textContent = e.target.value;
+[['#t1', '#p1'], ['#t2', '#p2']].forEach(([t, p]) => $(t).onclick = () => {
+  ['#t1', '#t2'].forEach(x => $(x).setAttribute('aria-pressed', x === t)); $('#p1').hidden = p !== '#p1'; $('#p2').hidden = p !== '#p2';
+});
+const notes = task => api({task, images:files, n:+$('#n').value, language:$('#lang').value});
+
+function drawCard() {
+  $('#cardbox').hidden = !cards.length; if (!cards.length) return;
+  $('#cprog').textContent = `Card ${ci + 1} of ${cards.length}`;
+  rich($('#q'), cards[ci].question, true); rich($('#a'), cards[ci].answer, true);
+  $('#a').hidden = !shown; $('#flip').textContent = shown ? 'Hide answer' : 'Show answer';
+}
+$('#mkcards').onclick = () => work(async () => {
+  need(); const j = await notes('cards'); if (!j.items.length) throw new Error('No cards came back.');
+  cards = j.items; ci = 0; shown = false; stats.cards += cards.length; save(); drawCard();
+});
+$('#prev').onclick = () => { ci = Math.max(0, ci - 1); shown = false; drawCard(); };
+$('#next').onclick = () => { ci = Math.min(cards.length - 1, ci + 1); shown = false; drawCard(); };
+$('#flip').onclick = () => { shown = !shown; drawCard(); };
+$('#csv').onclick = () => {
+  const q = s => '"' + s.replace(/"/g, '""') + '"', a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([cards.map(c => q(c.question) + ',' + q(c.answer)).join('\n')], {type:'text/csv'}));
+  a.download = 'lumina_flashcards.csv'; a.click();
+};
+
+function drawQuiz() {
+  $('#qz').innerHTML = quiz.map((q, i) => `<fieldset><legend>${i + 1}. ${esc(q.question)}</legend>` +
+    q.options.map((o, k) => `<label class="opt"><input type="radio" name="q${i}" value="${k}"> ${esc(o)}</label>`).join('') + '<p hidden></p></fieldset>').join('');
+  $('#check').hidden = !quiz.length; $('#check').disabled = false; $('#score').textContent = '';
+}
+$('#mkquiz').onclick = () => work(async () => {
+  need(); const j = await notes('quiz'); if (!j.items.length) throw new Error('No questions came back.');
+  quiz = j.items; drawQuiz();
+});
+$('#check').onclick = () => {
+  let right = 0;
+  $$('#qz fieldset').forEach((fs, i) => {
+    const pick = fs.querySelector('input:checked'), ok = pick && +pick.value === quiz[i].answer; if (ok) right++;
+    fs.querySelectorAll('.opt').forEach((l, k) => { if (k === quiz[i].answer) l.classList.add('ok'); else if (pick && +pick.value === k) l.classList.add('bad'); });
+    const w = fs.querySelector('p'); w.textContent = (ok ? 'Correct. ' : 'Not quite. ') + quiz[i].explanation; w.hidden = false;
+  });
+  const pct = Math.round(100 * right / quiz.length);
+  $('#score').textContent = `You got ${right} of ${quiz.length} right (${pct}%).`;
+  stats.quizzes++; stats.scores.push(pct); save(); $('#check').disabled = true;
+};
+show('home');
+</script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+{
+  "functions": { "api/gemma.py": { "maxDuration": 60 } }
+}
