@@ -2,8 +2,6 @@
 
 An AI study studio: photograph a problem or a page of handwritten notes, then get **hints**, **flashcards** and **quizzes**. Built on **Gemma 4**, Google's open-weights multimodal model, via the Gemini API, for Hacktoberfest 2026 Hack Day (Android Club VITC).
 
-🚀 Live demo: https://lumina-tau-ashen.vercel.app
-
 ## Features
 - **Tutor:** three hint levels (Nudge, Method, Full solution) plus follow-up chat
 - **Study Lab:** notes to index-card flashcards, multiple-choice quizzes with explanations, Anki CSV export
